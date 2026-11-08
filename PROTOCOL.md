@@ -156,7 +156,7 @@ legitimate reason to use it against the rig).
   messages, and the same bytes are written back verbatim via `0x06` in save
   bursts. The device **ships its own schema**: channel `0x0E` returns a
   1604-byte gzip of `SimWheelBase.proto` source text — saved in this repo at
-  `SimWheelBase.proto` and retrievable anytime with `./vrs-config.py schema`.
+  `SimWheelBase.proto` and retrievable anytime with `vrs-config --raw schema`.
   Key `SettingsProfile` fields: `1 profile_header
   (SimSettings.SettingsProfileHeader{1 number,2 name})`, `3 rotationDegrees`
   (180..2160), `6 ffbForce` (0..100), `7 smoothing` (0..10), `8 damping`,
@@ -205,7 +205,7 @@ requested by repeating the channel (`0x0E` schema download observed) with
 chunk sizes 476/476/476/176, total 1604 bytes — until a reply arrives with
 `payload_size < 476`. Data is at `[32:32+sz]` in each reply. No special block
 report ids appear on the wire; the SDK constants `kFeatureReportsVarId*`
-(0x67-0x6F) belong to its internal buffering. `./vrs-config.py schema`
+(0x67-0x6F) belong to its internal buffering. `vrs-config --raw schema`
 implements this loop and gunzips the result.
 
 ## 8. Constants reference **[SDK-proven — read live from the SDK]**
@@ -241,7 +241,7 @@ implements this loop and gunzips the result.
   exactly like Windows hidclass sends them. The kernel HID driver must be
   unbound from the interface first (`/sys/bus/usb/drivers/usbhid/unbind`, root),
   then `USBDEVFS_CLAIMINTERFACE` (`0x8004550F`) - both are done automatically by
-  `vrs-config.py --raw` / the GUI. Replug the USB cable afterwards and the
+  `vrs-config --raw` / the GUI. Replug the USB cable afterwards and the
   joystick + force feedback (`hid-universal-pidff`) come back.
 - **hidraw ioctls** (`HIDIOCGFEATURE`/`HIDIOCSFEATURE`) embed the buffer size in
   the request code - `fcntl.ioctl` cannot carry them; use `libc.ioctl` via
@@ -252,13 +252,13 @@ implements this loop and gunzips the result.
   abandoned without the ch-`0x01` commit leaves the base's connection table
   occupied and the next handshake stalls (`EPIPE` / `EINVAL`). The stall is
   *not* damage: `USBDEVFS_RESET` (`0x00005514`) on the bus node clears it
-  unprivileged - `./vrs-config.py --recovery` (CLI) or the GUI's
+  unprivileged - `vrs-config --recovery` (CLI) or the GUI's
   **Recover (USB reset)** button.
 - **One instance:** the usbdevfs interface claim is exclusive and the base
-  supports a single gated connection, so only one `vrs-config.py`/
-  `vrs-config-gui.py` may run against the base at a time; a second instance
+  supports a single gated connection, so only one `vrs-config`/
+  `vrs-config-gui` may run against the base at a time; a second instance
   conflicts with the first and can leave a stale connection - in that case
-  use **Recover (USB reset)** (GUI) or `./vrs-config.py --recovery` (CLI)
+  use **Recover (USB reset)** (GUI) or `vrs-config --recovery` (CLI)
   before starting again.
 - **udev:** `udev/99-vrs-dfp.rules` (run `scripts/install-udev.sh`) gives the
   seat user access to the 0483 USB + hidraw nodes.

@@ -20,10 +20,10 @@ against recorded traffic of the official Windows tool on the author's base. See 
 
 ## Features
 
-- **CLI** (`vrs-config.py`, Python 3 stdlib only):
+- **CLI** (`vrs-config`, Python 3 stdlib only):
   `versions` · `header` · `profiles` · `schema` · `sweep` · `raw` ·
   `set-profile` (whole-store save burst, dry-run first) · `--recovery`
-- **GUI** (`vrs-config-gui.py`, Tk): dark VRS One-style three-column form,
+- **GUI** (`vrs-config-gui`, Tk): dark VRS One-style three-column form,
   live steering-angle gauge (reads the 1 kHz joystick stream), per-effect
   *Device / Game / Device+game* override dropdowns, integer sliders, `Nm:`
   torque readout derived from Max force, profile
@@ -69,7 +69,7 @@ and one `sudo` run fixes it permanently for the current session.
 While unbound there is no joystick/FFB; **replug the USB cable** (or write
 `bind` to the driver) when you are done configuring to play again. If a
 previous session died mid-connection and reads stall (a *stale connection*),
-press the GUI's **Recover (USB reset)** button (CLI: `./vrs-config.py
+press the GUI's **Recover (USB reset)** button (CLI: `vrs-config
 --recovery`) — it does a plain USB reset, no power cycle needed.
 
 **Run only one instance at a time.** The tool claims the USB interface
@@ -77,6 +77,50 @@ exclusively and the base gates each connection (handshake → commit); a
 second `vrs-config-gui` (or a CLI + GUI mix) fights the first one for the
 claim and leaves stale connections behind — press **Recover (USB reset)**
 afterwards. Start a new one only after the previous has exited.
+
+## How to use
+
+**GUI** — the comfortable path (one instance at a time):
+
+```bash
+vrs-config-gui
+```
+
+1. The form loads itself from the base: versions bar, profile cards, every
+   slider/enum with its live value. If the first read stalls, press
+   **Recover (USB reset)** and hit *Read base* again.
+2. Pick a profile card, or **New** / **Duplicate** to create one; rename by
+   editing the name field; **Set active** marks the slot the base uses.
+   **Export / Import** keep JSON backups of single profiles.
+3. Adjust values. The gauge at the top of the left column shows the live
+   steering angle, effect rows carry the *Device / Game / Device+game*
+   override, and the `Nm:` readout next to Max force is the derived torque
+   limit (not separately editable).
+4. **SAVE TO DEVICE** shows a per-field diff confirmation, writes the whole
+   profile store in one burst (that is how the base works — the official
+   tool does the same), then re-reads to verify.
+5. When you are done configuring, replug the wheel's USB cable to bring the
+   joystick and force feedback back.
+
+**CLI** — everything scriptable:
+
+```bash
+vrs-config --raw versions                 # hw / fw / bootloader / build date
+vrs-config --raw header                   # profile count, active slot
+vrs-config --raw profiles                 # decoded values of every profile
+vrs-config --raw schema --out base.proto  # the base's own settings schema
+vrs-config --raw set-profile --profile 0 --set ffbForce=50 --dry-run
+vrs-config --raw set-profile --profile 0 --set ffbForce=50 --allow-write
+vrs-config --raw sweep                    # read-channel diagnostics
+vrs-config --recovery                     # clear a stale connection
+```
+
+`--raw` selects the verified raw-USB transport (the one that talks to the
+base exactly like Windows does); use it for everything. Writes always need
+`--allow-write` — run `--dry-run` first, it prints the exact new profile
+blob without touching the base. Field names and ranges come from the
+device schema (`vrs-config --raw schema`, or `SimWheelBase.proto` in this
+repo).
 
 ## How it works (short version)
 

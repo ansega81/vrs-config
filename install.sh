@@ -159,9 +159,7 @@ cat <<'EOF'
 
   GUI (VRS One-style; needs python3-tk):
 
-    xhost +local:                        # allow root's window on your session (X11)
     vrs-config-gui
-    xhost -local:
 
   Remove again with:  ./install.sh --uninstall
 EOF
