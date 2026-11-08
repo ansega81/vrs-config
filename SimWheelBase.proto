@@ -1,0 +1,261 @@
+syntax = "proto3";
+
+import "SimSettings.proto";
+
+package SimWheelBase;
+
+message SettingsProfile {
+    reserved 2, 4, 5;
+    reserved "encoderType", "encoderPpr";
+
+    SimSettings.SettingsProfileHeader profile_header = 1;
+    /* V2 */
+    optional int32 rotationDegrees = 3 [
+        (SimSettings.int_options).min = 180, 
+        (SimSettings.int_options).max = 2160,
+        (SimSettings.description) = "Rotation degrees description"
+    ];
+    
+//  enum WheelBaseEncoderTypeEnum {
+//      ENCODER_INCREMENTAL = 0;
+//      ENCODER_INCREMENTAL_REV = 1;
+//      ENCODER_BISS_C = 2;
+//      ENCODER_BISS_C_REV = 3;
+//  }
+//  optional WheelBaseEncoderTypeEnum encoderType = 4 [
+//      (SimSettings.description) = "Encoder type description"
+//  ];
+// 
+//  optional int32 encoderPpr = 5 [
+//      (SimSettings.int_options).min = 1, 
+//      (SimSettings.int_options).max = 2147483646,
+//      (SimSettings.description) = "Encoder PPR description"
+//  ];
+     
+    optional int32 ffbForce = 6 [
+        (SimSettings.int_options).min = 0, 
+        (SimSettings.int_options).max = 100,
+        (SimSettings.description) = "FFB max force description"
+    ];
+    
+    optional int32 smoothing = 7 [
+        (SimSettings.int_options).min = 0, 
+        (SimSettings.int_options).max = 10,
+        (SimSettings.description) = "Smoothing description"
+    ];
+    
+    optional int32 damping = 8 [
+        (SimSettings.int_options).min = 0, 
+        (SimSettings.int_options).max = 100,
+        (SimSettings.description) = "Damping description"
+    ];
+    
+    optional int32 friction = 9 [
+        (SimSettings.int_options).min = 0, 
+        (SimSettings.int_options).max = 100,
+        (SimSettings.description) = "Friction description"
+    ];
+    
+    optional int32 inertia = 10 [
+        (SimSettings.int_options).min = 0, 
+        (SimSettings.int_options).max = 100,
+        (SimSettings.description) = "Inertia description"
+    ];
+    
+    /* V3 */
+    optional int32 spring = 11 [
+        (SimSettings.int_options).min = 0, 
+        (SimSettings.int_options).max = 100,
+        (SimSettings.description) = "Spring description"
+    ];
+    
+    enum EffectOverrideEnum {
+        USE_DEVICE_EFFECT_ONLY = 0;
+        USE_GAME_EFFECT_ONLY = 1;
+        USE_DEVICE_AND_GAME_EFFECTS = 2;
+    }
+    
+    optional EffectOverrideEnum dampingOverride = 12 [
+        (SimSettings.description) = "Damping override description"
+    ];
+    
+    optional EffectOverrideEnum frictionOverride = 13 [
+        (SimSettings.description) = "Friction override description"
+    ];
+    
+    optional EffectOverrideEnum inertiaOverride = 14 [
+        (SimSettings.description) = "Inertia override description"
+    ];
+    
+    optional EffectOverrideEnum springOverride = 15 [
+        (SimSettings.description) = "Spring override description"
+    ];
+    
+    /* V4 */
+    enum SmoothingTypeEnum {
+        SMOOTHINGNONE = 0;
+        LEGACY1 = 1;
+        LEGACY2 = 2;
+        LEGACY3 = 3;
+        LEGACY4 = 4;
+        RATEADAPTIVERESPONSIVEPLUS = 5;
+        RATEADAPTIVERESPONSIVE = 6;
+        RATEADAPTIVEOPTIMAL = 7;
+        RATEADAPTIVESOFT = 8;
+        RATEADAPTIVESOFTPLUS = 9;
+        RATEADAPTIVESOFTMAX = 10;
+    }
+    
+    optional SmoothingTypeEnum smoothingType = 16 [
+        (SimSettings.description) = "Smoothing type description"
+    ];
+    
+    optional int32 staticForceReduction = 17 [
+        (SimSettings.int_options).min = 0, 
+        (SimSettings.int_options).max = 70,
+        (SimSettings.description) = "Static force reduction description"
+    ];
+        
+    optional int32 nonLinearity = 18 [
+        (SimSettings.int_options).min = 0, 
+        (SimSettings.int_options).max = 10,
+        (SimSettings.description) = "Non-linearity description"
+    ];
+    
+    enum SlewRateEnum {
+        PERFORMANCE = 0;
+        BALANCED = 1;
+        QUIET = 2;
+        PERFORMANCEPLUS = 3;
+    }
+    
+    optional SlewRateEnum slewRate = 19 [
+        (SimSettings.description) = "Slew rate description"
+    ];
+    
+    optional int32 endStopMaxForce = 20 [
+        (SimSettings.int_options).min = 0, 
+        (SimSettings.int_options).max = 100,
+        (SimSettings.description) = "End stop max force description"
+    ];
+    
+    optional int32 endStopStiffness = 21 [
+        (SimSettings.int_options).min = 1, 
+        (SimSettings.int_options).max = 5,
+        (SimSettings.description) = "End stop stiffness description"
+    ];
+    
+    optional int32 softEndStopDegrees = 22 [
+        (SimSettings.int_options).min = 180, 
+        (SimSettings.int_options).max = 2160,
+        (SimSettings.description) = "Soft end stop degrees description"
+    ];
+    
+    optional bool isSoftEndStopEnabled = 23 [
+        (SimSettings.description) = "Is soft end stop enabled description"
+    ];
+    
+    optional int32 torqueUpperBound = 24 [
+        (SimSettings.int_options).min = 0, 
+        (SimSettings.int_options).max = 20,
+        (SimSettings.description) = "Returns current max torque"
+    ];
+    
+    /* V6 */    
+    enum FilteringModeEmum {
+      FILTERMODELEGACY = 0;
+      FILTERMODENGBASIC = 1;
+      FILTERMODENGADVANCE = 2;
+    }
+    
+    optional FilteringModeEmum filterMode = 30 [
+        (SimSettings.description) = "Mode"
+    ];
+    
+    optional int32 motorSlewRate = 31 [
+        (SimSettings.int_options).min = 30, 
+        (SimSettings.int_options).max = 100,
+        (SimSettings.description) = "Motor slew rate"
+    ];
+    
+    optional int32 softwareSlewRate = 32 [
+        (SimSettings.int_options).min = 1, 
+        (SimSettings.int_options).max = 100,
+        (SimSettings.description) = "Software slew rate"
+    ];
+    
+    optional int32 predictionLevel = 33 [
+        (SimSettings.int_options).min = 0, 
+        (SimSettings.int_options).max = 100,
+        (SimSettings.description) = "Prediction level"
+    ];
+    
+    optional int32 predictionPeakDamp = 34 [
+        (SimSettings.int_options).min = 0, 
+        (SimSettings.int_options).max = 100,
+        (SimSettings.description) = "Prediction Peaking damping"
+    ];
+    
+    optional int32 stepBandStartFreq = 35 [
+        (SimSettings.int_options).min = 5, 
+        (SimSettings.int_options).max = 1000,
+        (SimSettings.description) = "Step band start frequency, Hz"
+    ];
+    
+   optional int32 stepBandDamping = 36 [
+        (SimSettings.int_options).min = 0, 
+        (SimSettings.int_options).max = 40,
+        (SimSettings.description) = "Step band damping, dB"
+    ];
+    
+   optional int32 LowPassCutoffFreq = 37 [
+        (SimSettings.int_options).min = 5, 
+        (SimSettings.int_options).max = 1000,
+        (SimSettings.description) = "Low pass catoff frequency, Hz"
+    ];
+}
+
+message Commands {
+    optional float setConstantForce = 1 [
+        (SimSettings.float_options).min = -1, 
+        (SimSettings.float_options).max = 1,
+        (SimSettings.description) = "Set constant force description"
+    ];
+    
+    optional int32 setSoftEndStop = 2 [
+        (SimSettings.int_options).min = 180, 
+        (SimSettings.int_options).max = 2160,
+        (SimSettings.description) = "Set soft end stop description"
+    ];
+    
+//  optional int32 multiSampling = 3 [
+//      (SimSettings.int_options).min = 0, 
+//      (SimSettings.int_options).max = 3,
+//      (SimSettings.description) = "MultiSampling  description"
+//  ];
+//  
+//  optional bytes force_array = 4 [
+//      (SimSettings.description) = "Force samples"
+//  ];
+}
+
+message Calibration {
+    SimSettings.SettingsProfileHeader calibration_header = 1;
+    
+    optional float centerOffset = 2;
+}
+
+message LockPair {
+	int32 key = 1;
+	string value = 2;
+}
+
+message TorqueLimitOperations {
+    optional string unlockTorqueLevelByCode = 1 [
+        (SimSettings.description) = "Use this to enable a torque level"
+    ];
+     
+    repeated LockPair programFactoryLocksForDevice = 2 [
+        (SimSettings.description) = "Use this to define torque level (un)lock keys"
+    ];
+}

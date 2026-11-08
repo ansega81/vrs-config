@@ -1,0 +1,8 @@
+# VRS DirectForce Pro wheel bases (STMicroelectronics VID 0483 —
+# DFP15=a355, DirectForce Pro base=cb52): give the active desktop session rw
+# access to the USB device node and its hidraw child so vrs-config
+# (raw usbdevfs transport) and PID-FF tools work.
+ACTION=="add|change", SUBSYSTEM=="usb", ATTR{idVendor}=="0483", ATTR{idProduct}=="a355", TAG+="uaccess"
+ACTION=="add|change", SUBSYSTEM=="usb", ATTR{idVendor}=="0483", ATTR{idProduct}=="cb52", TAG+="uaccess"
+ACTION=="add|change", SUBSYSTEM=="hidraw", ATTRS{idVendor}=="0483", ATTRS{idProduct}=="a355", TAG+="uaccess"
+ACTION=="add|change", SUBSYSTEM=="hidraw", ATTRS{idVendor}=="0483", ATTRS{idProduct}=="cb52", TAG+="uaccess"

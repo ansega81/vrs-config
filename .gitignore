@@ -1,0 +1,4 @@
+__pycache__/
+*.pyc
+vrs-gui.log
+*.log
