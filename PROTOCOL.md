@@ -6,7 +6,7 @@ verified byte-for-byte against recorded traffic of the official Windows tool on
 the author's own base, and validated live against a DFP15
 (fw 1.15, hw 4.0). Status of every claim is marked: **[SDK-proven]** (decoded
 from the SDK binary or struct-probed through the SDK itself), **[inferred]**
-(consistent reading of the disassembly), **[LIVE-VERIFIED]** (observed on the wire), **[TBD]** (must be confirmed against a live base).
+(consistent reading of the disassembly), **[TBD]** (must be confirmed against a live base).
 
 Implementations: `vrs-config.py` (CLI) and `vrs-config-gui.py` (Tk desktop GUI)
 in this repository.
@@ -38,7 +38,7 @@ in this repository.
     accepts feature buffers of both sizes (`kFeatureReport64Size = 64`,
     `kFeatureReportSize = 512`).
 
-## 2. Transport **[LIVE-VERIFIED 2026-11-08]**
+## 2. Transport
 
 > LINUX STATUS (2026-11-08, RESOLVED): this exact transport now WORKS on
 > Linux via `vrs-config.py --raw` (raw usbdevfs, iface-recipient, unbound
@@ -63,13 +63,13 @@ transfers, so `vrs-config.py` uses the identical transport. The SDK sleeps
 used for configuration — the only interrupt traffic on the wire is the
 1 kHz joystick input stream.
 
-Sequencing **[LIVE-VERIFIED]** (VRS One behavior, reproduced by the tool):
+Sequencing (VRS One behavior, reproduced by the tool):
 `client_id` = random u32 fixed for the connection; `sequence_id` = fresh
 random u32 per logical OPERATION (constant within one read/save burst);
 `request_id` = u32 counter incrementing 0,1,2… per frame for the connection.
 Replies echo channel/client_id/sequence/request/offset verbatim.
 
-## 3. Frame layout **[LIVE-VERIFIED 2026-11-08]**
+## 3. Frame layout
 
 Little-endian. Identical header for requests and replies:
 
@@ -104,7 +104,7 @@ payload_size u16 @4, block_num u8 @6.
 Same header, CRC over bytes 0–59 stored at 60–63 **[SDK-proven]**; not used
 in practice (VRS One only sends 512-byte frames).
 
-## 4. CRC **[LIVE-VERIFIED 2026-11-08]**
+## 4. CRC
 
 Reflected CRC-32 (poly `0xEDB88320`, init `0xFFFFFFFF`, final XOR) — the
 standard `zlib.crc32`. Two CRC tables (normal + bit-reversed word order)
@@ -118,7 +118,7 @@ The old 508-vs-509 auto-probe is gone; `parse_frame` checks `[0:508]@508`.
 
 64-byte frame: CRC over `[0:60]` stored at `60` **[SDK-proven]**.
 
-## 5. Channels (frame byte 1) **[LIVE-VERIFIED 2026-11-08]**
+## 5. Channels (frame byte 1)
 
 Semantics below are from real VRS One traffic on a healthy DFP15 (45 transaction
 pairs + full save bursts recorded by the author), cross-checked against the
@@ -149,7 +149,7 @@ an sz 0 ACK that echoes the request counters.
 `0x08`/`0x09` are refused outright (only `--force` bypasses, and there is no
 legitimate reason to use it against the rig).
 
-## 6. Payloads **[LIVE-VERIFIED 2026-11-08, corrected]**
+## 6. Payloads
 
 - **Profiles travel as PROTOBUF** (this supersedes the earlier "raw struct"
   inference): `0x04` replies are serialized `SimWheelBase.SettingsProfile`
@@ -197,7 +197,7 @@ message Calibration { int32 step_result=1; string tip_message=2; }
   as `Brake effects strength` −10000..10000). Useful later for the CLI's
   human-friendly names; keep it as a reference table only.
 
-## 7. Chunked transfers **[LIVE-VERIFIED]**
+## 7. Chunked transfers
 
 Large payloads stream on the SAME `0x66` feature report: continuation is
 requested by repeating the channel (`0x0E` schema download observed) with
