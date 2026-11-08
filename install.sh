@@ -150,17 +150,17 @@ cat <<'EOF'
 
   CLI (protocol reference: PROTOCOL.md):
 
-    sudo vrs-config --raw versions       # hw/fw/bootloader versions
-    sudo vrs-config --raw header         # profile count / active slot
-    sudo vrs-config --raw profiles       # decode every profile
-    sudo vrs-config --raw schema --out /tmp/live.proto
-    sudo vrs-config --raw set-profile --profile 0 --set ffbForce=50 --dry-run
-    sudo vrs-config --raw set-profile --profile 0 --set ffbForce=50 --allow-write
+    vrs-config --raw versions       # hw/fw/bootloader versions
+    vrs-config --raw header         # profile count / active slot
+    vrs-config --raw profiles       # decode every profile
+    vrs-config --raw schema --out /tmp/live.proto
+    vrs-config --raw set-profile --profile 0 --set ffbForce=50 --dry-run
+    vrs-config --raw set-profile --profile 0 --set ffbForce=50 --allow-write
 
   GUI (VRS One-style; needs python3-tk):
 
     xhost +local:                        # allow root's window on your session (X11)
-    sudo vrs-config-gui
+    vrs-config-gui
     xhost -local:
 
   Remove again with:  ./install.sh --uninstall
@@ -168,14 +168,14 @@ EOF
 else
 cat <<'EOF'
   (not installed to PATH yet - run ./install.sh without --check/--no-app,
-   or from this folder:  python3 ./vrs-config.py ... / sudo ./vrs-config-gui.py)
+   or from this folder:  python3 ./vrs-config.py --raw ... / python3 ./vrs-config-gui.py)
 
   CLI (protocol reference: PROTOCOL.md):
 
-    sudo ./vrs-config.py --raw versions  # hw/fw/bootloader versions
-    sudo ./vrs-config.py --raw profiles  # decode every profile
-    sudo ./vrs-config.py --raw set-profile --profile 0 --set ffbForce=50 --dry-run
-    sudo ./vrs-config-gui.py             # GUI (needs python3-tk)
+    python3 ./vrs-config.py --raw versions  # hw/fw/bootloader versions
+    python3 ./vrs-config.py --raw profiles  # decode every profile
+    python3 ./vrs-config.py --raw set-profile --profile 0 --set ffbForce=50 --dry-run
+    python3 ./vrs-config-gui.py          # GUI (needs python3-tk)
 EOF
 fi
 cat <<'EOF'

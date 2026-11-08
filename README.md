@@ -13,7 +13,7 @@ reverse-engineered from the vendor's own SDK and validated byte-for-byte
 against recorded traffic of the official Windows tool on the author's base. See [PROTOCOL.md](PROTOCOL.md).
 
 ```
-  $ sudo ./vrs-config-gui.py            ← VRS One-style desktop GUI
+  $ vrs-config-gui            ← VRS One-style desktop GUI
 ```
 
 <img src="docs/screenshot.png" alt="vrs-config GUI" width="820">
@@ -51,18 +51,20 @@ against recorded traffic of the official Windows tool on the author's base. See 
 ./install.sh --uninstall    # remove again
 ```
 
-After installing, use `sudo vrs-config ...` / `sudo vrs-config-gui` from any
-directory (root is needed because the tools unbind the kernel HID driver from
-the wheel base while they talk raw USB to it).
-
-Reading and writing uses the **raw USB transport**: the tool unbinds the
-kernel HID driver from the base's interface (needs root) and talks EP0
-directly, exactly like Windows hidclass does. Run either program with `sudo`:
+The **udev entries required for the DFP15** (`/etc/udev/rules.d/99-vrs-dfp.rules`:
+seat-user access to the wheel base's `/dev/bus/usb` + hidraw nodes) are
+installed by `./install.sh`. After installation you may just run the commands
+from PATH, **without sudo**:
 
 ```bash
-sudo ./vrs-config.py --raw versions
-sudo ./vrs-config-gui.py
+vrs-config versions          # or vrs-config-gui
 ```
+
+Reading and writing uses the **raw USB transport**: the tool claims the base's
+USB interface and talks EP0 directly, exactly like Windows hidclass does. It
+unbinds the kernel HID driver from the base while it runs - if that needs more
+rights than your session has (e.g. right after a replug), it prints a notice
+and one `sudo` run fixes it permanently for the current session.
 
 While unbound there is no joystick/FFB; **replug the USB cable** (or write
 `bind` to the driver) when you are done configuring to play again. If a
